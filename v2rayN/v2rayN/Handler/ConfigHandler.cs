@@ -294,7 +294,7 @@ namespace v2rayN.Handler
         /// <param name="config"></param>
         /// <param name="index"></param>
         /// <returns></returns>
-        public static string GetVmessQRCode(Config config, int index)
+        public static string GetUrl(Config config, int index)
         {
             try
             {
@@ -303,23 +303,10 @@ namespace v2rayN.Handler
                 VmessItem vmessItem = config.vmess[index];
                 if (vmessItem.configType == (int)EConfigType.Vmess)
                 {
-                    VmessQRCode vmessQRCode = new VmessQRCode();
-                    vmessQRCode.v = vmessItem.configVersion.ToString();
-                    vmessQRCode.ps = vmessItem.remarks.Trim(); //备注也许很长 ;
-                    vmessQRCode.add = vmessItem.address;
-                    vmessQRCode.port = vmessItem.port.ToString();
-                    vmessQRCode.id = vmessItem.id;
-                    vmessQRCode.aid = vmessItem.alterId.ToString();
-                    vmessQRCode.net = vmessItem.network;
-                    vmessQRCode.type = vmessItem.headerType;
-                    vmessQRCode.host = vmessItem.requestHost;
-                    vmessQRCode.path = vmessItem.path;
-                    vmessQRCode.tls = vmessItem.streamSecurity;
-
-                    url = Utils.ToJson(vmessQRCode);
-                    url = Utils.Base64Encode(url);
+                    List<byte> ByteStream = new List<byte>();
+                    BytesRegulator.vItem2Bs(ref ByteStream, vmessItem);
+                    url = Convert.ToBase64String(ByteStream.ToArray());
                     url = string.Format("{0}{1}", Global.vmessProtocol, url);
-
                 }
                 else if (vmessItem.configType == (int)EConfigType.Shadowsocks)
                 {

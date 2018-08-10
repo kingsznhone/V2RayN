@@ -25,7 +25,7 @@ namespace v2rayN.Forms
         {
             if (Index >= 0)
             {
-                string url = ConfigHandler.GetVmessQRCode(config, Index);
+                string url = ConfigHandler.GetUrl(config, Index);
                 if (string.IsNullOrEmpty(url))
                 {
                     picQRCode.Image = null;

@@ -1024,42 +1024,19 @@ namespace v2rayN.Handler
 
                 if (result.StartsWith(Global.vmessProtocol))
                 {
-                    int indexSplit = result.IndexOf("?");
-                    if (indexSplit > 0)
+                    vmessItem.configType = (int)EConfigType.Vmess;
+                    result = result.Substring(Global.vmessProtocol.Length);
+                    byte[] Bytestream = Convert.FromBase64String(result);
+
+                    BytesInverter.Bs2vItem(ref Bytestream, vmessItem);
+
+                    if (vmessItem == null)
                     {
-                        vmessItem = ResolveVmess4Kitsunebi(result);
+                        msg = "转换配置文件失败";
+                        return null;
                     }
-                    else
-                    {
-                        vmessItem.configType = (int)EConfigType.Vmess;
-                        result = result.Substring(Global.vmessProtocol.Length);
-                        result = Utils.Base64Decode(result);
-
-                        //转成Json
-                        VmessQRCode vmessQRCode = Utils.FromJson<VmessQRCode>(result);
-                        if (vmessQRCode == null)
-                        {
-                            msg = "转换配置文件失败";
-                            return null;
-                        }
-                        vmessItem.security = Global.DefaultSecurity;
-                        vmessItem.network = Global.DefaultNetwork;
-                        vmessItem.headerType = Global.None;
-
-                        vmessItem.configVersion = Utils.ToInt(vmessQRCode.v);
-                        vmessItem.remarks = vmessQRCode.ps;
-                        vmessItem.address = vmessQRCode.add;
-                        vmessItem.port = Utils.ToInt(vmessQRCode.port);
-                        vmessItem.id = vmessQRCode.id;
-                        vmessItem.alterId = Utils.ToInt(vmessQRCode.aid);
-                        vmessItem.network = vmessQRCode.net;
-                        vmessItem.headerType = vmessQRCode.type;
-                        vmessItem.requestHost = vmessQRCode.host;
-                        vmessItem.path = vmessQRCode.path;
-                        vmessItem.streamSecurity = vmessQRCode.tls;
-                    }
-
-                    ConfigHandler.UpgradeServerVersion(ref vmessItem);
+                    //不太清楚这里是url格式的版本控制还是内部数据结构的版本控制，先注释掉了——ks
+                    //ConfigHandler.UpgradeServerVersion(ref vmessItem);
                 }
                 else if (result.StartsWith(Global.ssProtocol))
                 {
