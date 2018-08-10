@@ -475,7 +475,7 @@ namespace v2rayN.Forms
             StringBuilder sb = new StringBuilder();
             for (int k = 0; k < lvSelecteds.Count; k++)
             {
-                string url = ConfigHandler.GetVmessQRCode(config, lvSelecteds[k]);
+                string url = ConfigHandler.GetUrl(config, lvSelecteds[k]);
                 if (Utils.IsNullOrEmpty(url))
                 {
                     continue;
